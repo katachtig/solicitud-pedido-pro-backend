@@ -7,7 +7,11 @@ app.get("/", (req, res) => {
   res.send("Backend solicitud pedido OK");
 });
 
-const PORT = process.env.PORT || 3000;
+app.get("/apps/solicitud-pedido", (req, res) => {
+  res.send("Health check OK");
+});
+
+const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => {
   console.log("Server running on port", PORT);
 });
