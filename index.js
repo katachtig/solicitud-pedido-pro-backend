@@ -98,20 +98,28 @@ app.post("/apps/solicitud-pedido", async (req, res) => {
     }
   };
 
-  const r = await fetch(`https://${SHOP}/admin/api/2025-01/graphql.json`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-Shopify-Access-Token": TOKEN
-    },
-    body: JSON.stringify(gql)
+const r = await fetch(`https://${SHOP}/admin/api/2024-10/graphql.json`, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "X-Shopify-Access-Token": TOKEN
+  },
+  body: JSON.stringify(gql)
+});
+
+const raw = await r.text();
+let data = null;
+try { data = JSON.parse(raw); } catch (e) {}
+
+if (!r.ok || !data) {
+  return res.status(502).json({
+    ok: false,
+    code: "SHOPIFY_API_ERROR",
+    shopifyStatus: r.status,
+    shopifyBody: raw ? raw.slice(0, 500) : null
   });
+}
 
-  const data = await r.json().catch(() => null);
-
-  if (!r.ok || !data) {
-    return res.status(502).json({ ok: false, code: "SHOPIFY_API_ERROR" });
-  }
 
   const out = data.data && data.data.metaobjectCreate;
   const errs = out && out.userErrors ? out.userErrors : [];
