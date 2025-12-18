@@ -102,37 +102,22 @@ app.post("/apps/solicitud-pedido", async (req, res) => {
 
   if (!r.ok || !data) {
     return res.status(502).json({ ok: false, code: "SHOPIFY_API_ERROR" });
-  }
+ const out = data.data && data.data.metaobjectCreate;
+const errs = out && out.userErrors ? out.userErrors : [];
 
-  const out = data.data && data.data.metaobjectCreate;
-  const errs = out && out.userErrors ? out.userErrors : [];
-
-  if (!out || errs.length) {
-    return res.status(400).json({
-      ok: false,
-      code: "METAOBJECT_CREATE_FAILED",
-      userErrors: errs
-    });
-  }
-
-  return res.status(200).json({
-    ok: true,
-    message: "Solicitud de pedido enviada"
+if (!out || errs.length) {
+  return res.status(400).json({
+    ok: false,
+    code: "METAOBJECT_CREATE_FAILED",
+    userErrors: errs
   });
+}
+
+return res.status(200).json({
+  ok: true,
+  message: "Solicitud de pedido enviada"
 });
 
-  }
-
-  if (!items.length) {
-    return res.status(400).json({
-      ok: false,
-      code: "EMPTY_CART",
-      message: "No hay productos en la solicitud"
-    });
-  }
-
-  return res.status(200).json({
-    ok: true,
     message: "Solicitud de pedido enviada",
     received: {
       customer: {
