@@ -116,9 +116,6 @@ if (!out || errs.length) {
 return res.status(200).json({
   ok: true,
   message: "Solicitud de pedido enviada"
-});
-
-    message: "Solicitud de pedido enviada",
     received: {
       customer: {
         name,
